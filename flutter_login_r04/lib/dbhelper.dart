@@ -46,7 +46,11 @@ class DbHelper {
   Future<int> insertUser(User object) async {
     Database db = await this.getDatabase();
     int count = 0;
-    count = await db.insert('users', object.toMap());
+    try {
+      count = await db.insert('users', object.toMap());
+    } catch (e) {
+      print('insert gagal');
+    }
     return count;
   }
 

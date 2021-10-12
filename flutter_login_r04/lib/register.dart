@@ -81,11 +81,8 @@ class _RegisterState extends State<Register> {
                                   usernameController.text,
                                   passwordController.text,
                                   emailController.text);
-                              try {
-                                dbHelper.insertUser(user);
-                              } catch (e) {
-                                print('insert gagal');
-                              }
+
+                              dbHelper.insertUser(user);
 
                               Future<List<Map<String, dynamic>>> listMap =
                                   dbHelper.selectUser(usernameController.text,
