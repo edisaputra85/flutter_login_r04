@@ -62,4 +62,11 @@ class DbHelper {
         where: "username='$username' AND password='$password'");
     return mapList;
   }
+
+  //Read
+  Future<List<Map<String, dynamic>>> selectAllUser() async {
+    Database db = await this.getDatabase();
+    var mapList = await db.query('users');
+    return mapList;
+  }
 }

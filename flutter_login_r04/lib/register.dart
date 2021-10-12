@@ -77,13 +77,28 @@ class _RegisterState extends State<Register> {
                           Expanded(
                               child: FloatingActionButton(
                             onPressed: () {
+                              //membuat objek user
                               user = new User(
                                   usernameController.text,
                                   passwordController.text,
                                   emailController.text);
+                              //insert user ke tabel users pada sqlite
+                              dbHelper.insertUser(user).then((count) {
+                                if (count > 0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content:
+                                              Text("Registrasi user sukses"),
+                                          backgroundColor: Colors.green));
+                                  Navigator.pushNamed(context, '/login');
+                                }
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        "Registrasi user gagal, username / email sudah terdaftar"),
+                                    backgroundColor: Colors.red));
+                              });
 
-                              dbHelper.insertUser(user);
-
+                              //menampilkan data user yang diinsert
                               Future<List<Map<String, dynamic>>> listMap =
                                   dbHelper.selectUser(usernameController.text,
                                       passwordController.text);
@@ -102,7 +117,18 @@ class _RegisterState extends State<Register> {
                     onPressed: () {
                       Navigator.pushNamed(context, '/login');
                     },
-                    child: Text('Back to Login'))
+                    child: Text('Back to Login')),
+                ElevatedButton(
+                    onPressed: () {
+                      //select all user dari tabel users
+                      dbHelper.selectAllUser().then((mapList) {
+                        //baca satu per satu record pada mapList
+                        mapList.forEach((element) {
+                          print(element);
+                        });
+                      });
+                    },
+                    child: Text('Tampilkan data user'))
               ],
             ),
           ))),
