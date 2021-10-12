@@ -96,6 +96,7 @@ class _LoginState extends State<Login> {
                                         SnackBar(
                                             content: Text("Login sukses"),
                                             backgroundColor: Colors.green));
+                                    Navigator.pushNamed(context, '/dashboard');
                                   } else
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
