@@ -22,8 +22,16 @@ class _DashboardState extends State<Dashboard> {
             decoration: BoxDecoration(
               color: Colors.blue,
             ),
-            child: Text('Welcome ' + userData.getUsername(),
-                style: TextStyle(fontSize: 24)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Welcome ' + userData.getUsername(),
+                    style: TextStyle(fontSize: 24)),
+                Container(
+                    margin: EdgeInsets.only(top: 15),
+                    child: Text('Email :' + userData.getemail()))
+              ],
+            ),
           ),
           ListTile(
             leading: Icon(Icons.settings),
