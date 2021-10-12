@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login_r04/dbhelper.dart';
 
+import 'user.dart';
+
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
@@ -13,6 +15,7 @@ class _LoginState extends State<Login> {
   TextEditingController usernameController = TextEditingController();
 
   DbHelper dbHelper = new DbHelper();
+  User user;
 
   bool validateLogin() {
     FormState form = this.formKey.currentState;
@@ -96,7 +99,11 @@ class _LoginState extends State<Login> {
                                         SnackBar(
                                             content: Text("Login sukses"),
                                             backgroundColor: Colors.green));
-                                    Navigator.pushNamed(context, '/dashboard');
+                                    mapList.forEach((element) {
+                                      user = User.fromMap(element);
+                                    });
+                                    Navigator.pushNamed(context, '/dashboard',
+                                        arguments: user);
                                   } else
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(

@@ -20,4 +20,8 @@ class User {
     map['email'] = this._email;
     return map;
   }
+
+  String getUsername() {
+    return this._username;
+  }
 }

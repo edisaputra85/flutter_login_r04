@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login_r04/dbhelper.dart';
+import 'package:flutter_login_r04/user.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -9,6 +10,8 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
+    User userData = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
       appBar: AppBar(title: Text('Dashboard')),
       drawer: Drawer(
@@ -19,7 +22,8 @@ class _DashboardState extends State<Dashboard> {
             decoration: BoxDecoration(
               color: Colors.blue,
             ),
-            child: Text('Welcome User', style: TextStyle(fontSize: 24)),
+            child: Text('Welcome ' + userData.getUsername(),
+                style: TextStyle(fontSize: 24)),
           ),
           ListTile(
             leading: Icon(Icons.settings),
