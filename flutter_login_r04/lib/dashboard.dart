@@ -10,7 +10,9 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
-    User userData = ModalRoute.of(context).settings.arguments;
+    Map<String, dynamic> objData = ModalRoute.of(context).settings.arguments;
+    User userData = objData['user'];
+    int userId = objData['userId'];
 
     return Scaffold(
       appBar: AppBar(title: Text('Dashboard')),
@@ -36,6 +38,9 @@ class _DashboardState extends State<Dashboard> {
           ListTile(
             leading: Icon(Icons.settings),
             title: Text('Settings'),
+            onTap: () {
+              Navigator.pushNamed(context, '/setting', arguments: userId);
+            },
           ),
           ListTile(
             leading: Icon(Icons.logout),

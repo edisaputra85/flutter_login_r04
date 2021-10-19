@@ -95,15 +95,20 @@ class _LoginState extends State<Login> {
                                     .then((mapList) {
                                   if (mapList.length > 0) {
                                     //jika user sudah terdaftar, tampilkan snackbar login sukses dan navigasi ke dashboard
+                                    var userId;
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             content: Text("Login sukses"),
                                             backgroundColor: Colors.green));
                                     mapList.forEach((element) {
+                                      userId = element['id'];
                                       user = User.fromMap(element);
                                     });
                                     Navigator.pushNamed(context, '/dashboard',
-                                        arguments: user);
+                                        arguments: {
+                                          "userId": userId,
+                                          "user": user
+                                        });
                                   } else
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(

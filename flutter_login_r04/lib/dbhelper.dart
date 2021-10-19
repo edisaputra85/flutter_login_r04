@@ -69,4 +69,20 @@ class DbHelper {
     var mapList = await db.query('users');
     return mapList;
   }
+
+  Future<int> updateUserPassword(int idUser, String password) async {
+    Database db = await this.getDatabase();
+    //pakai rawupdate tidak perlu tipe objek map
+    int count = await db.rawUpdate(
+        'UPDATE users SET password = ? WHERE id = ?', ['$password', '$idUser']);
+    return count;
+  }
+
+  Future<int> updateUserEmail(int idUser, String email) async {
+    Database db = await this.getDatabase();
+    //pakai rawupdate tidak perlu tipe objek map
+    int count = await db.rawUpdate(
+        'UPDATE users SET email = ? WHERE id = ?', ['$email', '$idUser']);
+    return count;
+  }
 }
