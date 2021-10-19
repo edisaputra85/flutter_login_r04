@@ -125,6 +125,7 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     userId = ModalRoute.of(context).settings.arguments;
     if (userData == null) reloaduserData();
+    print(userData);
 
     return Scaffold(
       appBar: AppBar(title: Text('Dashboard')),
@@ -139,11 +140,16 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Welcome ' + userData.getUsername(),
+                Text(
+                    "Welcome " +
+                        (userData != null ? userData.getUsername() : 'user'),
                     style: TextStyle(fontSize: 24)),
                 Container(
                     margin: EdgeInsets.only(top: 15),
-                    child: Text('Email :' + userData.getemail()))
+                    child: Text(
+                      "User Email : " +
+                          (userData != null ? userData.getemail() : 'email'),
+                    ))
               ],
             ),
           ),
