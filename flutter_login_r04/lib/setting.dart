@@ -51,7 +51,7 @@ class _SettingState extends State<Setting> {
                 TextFormField(
                   controller: emailController,
                   decoration: InputDecoration(
-                    label: Text('New Email'),
+                    labelText: 'New Email',
                     hintText: 'input new email',
                   ),
                 ),

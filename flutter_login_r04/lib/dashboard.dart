@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login_r04/dbhelper.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_login_r04/user.dart';
+
+import 'tugas.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -8,11 +11,120 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  static List<Map<String, dynamic>> _listTugas;
+  DbHelper dbHelper = new DbHelper();
+  User userData;
+  int userId;
+
+  void reloaduserData() {
+    dbHelper.selectUserOnId(userId).then((userList) {
+      dbHelper.selectAllTugas().then((listTugas) {
+        setState(() {
+          _listTugas = listTugas;
+          userData = User.fromMap(userList.elementAt(0));
+          print(_listTugas);
+        });
+      });
+    });
+  }
+
+  ListView createListView() {
+    if (_listTugas != null) {
+      return ListView.builder(
+        shrinkWrap:
+            true, //harus tambahkan shrinkwrap, listview tidak boleh dibungkus dengan singlechildscroolview
+        itemCount: _listTugas.length,
+        itemBuilder: (context, index) {
+          return Container(
+              margin: EdgeInsets.all(2),
+              child: Card(
+                child: Container(
+                  color: getColor(index),
+                  padding: EdgeInsets.all(5),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: Text('Matakuliah ')),
+                          Expanded(
+                            flex: 2,
+                            child: Text(_listTugas[index]['matakuliah']),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(child: Text('Deadline ')),
+                          Expanded(
+                            flex: 2,
+                            child: Text(DateFormat("dd MMMM y").format(
+                                DateTime.parse(_listTugas[index]['deadline']))),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(child: Text('Uraian Tugas ')),
+                          Expanded(
+                            flex: 2,
+                            child: Text(
+                              _listTugas[index]['uraian_tugas'],
+                              maxLines: 5,
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(child: Text('Status Tugas ')),
+                          Expanded(
+                            flex: 2,
+                            child: Text(_listTugas[index]['status']),
+                          )
+                        ],
+                      ),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton(
+                              onPressed: () {
+                                //update record tugas berdasarkan id menjadi selesai dan set state element yang berubah
+                                DateTime today = DateTime.now();
+                                bool isLewatWaktu = false;
+                                if (today.isAfter(DateTime.parse(
+                                        _listTugas[index]['deadline'])
+                                    .add(Duration(
+                                        days:
+                                            1)))) //tambah satu krn batas wajtu hari yg sama tapi pkl 23.59, sehingga mendekati hari berikutnya
+                                  isLewatWaktu = true;
+
+                                if (_listTugas[index]['status'] == 'belum' &&
+                                    isLewatWaktu == false) {
+                                  dbHelper.updateStatusTugas(
+                                      _listTugas[index]['id'], 'selesai');
+                                  reloaduserData(); //mapList bersifat read-only, sekali diisi tidak bisa diupdate karena ukuran data yg besar disebabkan menyimpan objek, map harus dclone untuk mengupdate datanya
+                                } else if (_listTugas[index]['status'] ==
+                                    'selesai') {
+                                  dbHelper.updateStatusTugas(
+                                      _listTugas[index]['id'], 'belum');
+                                  reloaduserData();
+                                }
+                              },
+                              child: Text(getButtonLabel(index))))
+                    ],
+                  ),
+                ),
+              ));
+        },
+      );
+    } else {
+      return ListView();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> objData = ModalRoute.of(context).settings.arguments;
-    User userData = objData['user'];
-    int userId = objData['userId'];
+    userId = ModalRoute.of(context).settings.arguments;
+    if (userData == null) reloaduserData();
 
     return Scaffold(
       appBar: AppBar(title: Text('Dashboard')),
@@ -56,9 +168,44 @@ class _DashboardState extends State<Dashboard> {
         // is used to create container full screen with filled content.
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('images/background.jpg'), fit: BoxFit.cover),
+            image: AssetImage('images/background.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Container(
+          margin: EdgeInsets.all(10),
+          child: createListView(),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/tambahtugas', arguments: userId);
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.red,
+      ),
     );
+  }
+
+  Color getColor(int index) {
+    DateTime today = DateTime.now();
+    bool isLewatWaktu = false;
+    if (today.isAfter(DateTime.parse(_listTugas[index]['deadline']).add(Duration(
+        days:
+            1)))) //tambah satu krn batas wajtu hari yg sama tapi pkl 23.59, sehingga mendekati hari berikutnya
+      isLewatWaktu = true;
+    if (_listTugas[index]['status'] == 'belum' && isLewatWaktu == false)
+      return Colors.orange;
+    else if (_listTugas[index]['status'] == 'selesai')
+      return Colors.green;
+    else
+      return Colors.red;
+  }
+
+  String getButtonLabel(int index) {
+    if (_listTugas[index]['status'] == 'belum')
+      return 'Set Selesai';
+    else
+      return 'Set Belum';
   }
 }

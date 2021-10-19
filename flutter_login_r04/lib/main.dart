@@ -3,6 +3,7 @@ import 'dashboard.dart';
 import 'login.dart';
 import 'register.dart';
 import 'setting.dart';
+import 'tambahtugas.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => Register(),
           '/dashboard': (context) => Dashboard(),
           '/setting': (context) => Setting(),
+          '/tambahtugas': (context) => TambahTugas(),
         });
   }
 }

@@ -105,10 +105,7 @@ class _LoginState extends State<Login> {
                                       user = User.fromMap(element);
                                     });
                                     Navigator.pushNamed(context, '/dashboard',
-                                        arguments: {
-                                          "userId": userId,
-                                          "user": user
-                                        });
+                                        arguments: userId);
                                   } else
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
